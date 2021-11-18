@@ -1,0 +1,10 @@
+"
+json.dumps(variables).encode('utf-8') then to convert back from bytes you can use json.loads(s.decode('utf-8'))
+"
+# message format 
+
+{
+    "send_module":"module_name"
+    "action":"set/read/received/action/response/error"
+    "state_name":"value"
+}
