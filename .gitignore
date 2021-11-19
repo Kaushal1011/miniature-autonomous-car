@@ -4,10 +4,12 @@ __pycache__/
 *$py.class
 
 AssistMyCar
-
+detected
 # C extensions
 *.so
 
+*.zip
+frames
 # Distribution / packaging
 .Python
 build/
