@@ -8,7 +8,9 @@ dist_meas = 0.00
 km_per_hour = 0
 rpm = 0
 elapse = 0
-sensor = 16
+sensor = 9
+radius=6
+
 pulse = 0
 start_timer = time.time()
 
@@ -42,7 +44,7 @@ if __name__ == '__main__':
     init_interrupt()
     while True:
         # calculate for both wheels
-        calculate_speed(20) # call this function with wheel radius as parameter
+        calculate_speed(radius) # call this function with wheel radius as parameter
         # send speed and distance from both wheels to mother_node
         
         #print('rpm:{0:.0f}-RPM kmh:{1:.0f}-KMH dist_meas:{2:.2f}m pulse:{3}'.format(rpm,km_per_hour,dist_meas,pulse))
