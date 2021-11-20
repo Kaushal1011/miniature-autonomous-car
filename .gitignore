@@ -7,7 +7,7 @@ AssistMyCar
 detected
 # C extensions
 *.so
-
+.virtual_documents
 *.zip
 frames
 # Distribution / packaging
