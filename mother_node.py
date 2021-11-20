@@ -1,15 +1,13 @@
 
-from states import state_dict, nav_dict
+from states import state_dict,state_dict_store, nav_dict
 import time
 import zmq
 import json
 import logging
 
-logging.basicConfig(filename='example.log',
-                    encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='example.log',level=logging.DEBUG)
 
-states = ["l_dist", "r_dist", "b_dist", "l_ir",
-          "c_ir", "r_ir", "speed", "mob_state", "tot_dist"]
+states = state_dict.keys()
 context = zmq.Context()
 socket = context.socket(zmq.REP)
 socket.bind("tcp://*:5555")
@@ -19,6 +17,7 @@ def set(statename, stateval):
     if statename in states:
         print("in")
         state_dict[statename] = stateval
+        state_dict_store[statename].append(stateval)
 
 
 def main():

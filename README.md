@@ -10,10 +10,10 @@ Mobile Robots Autonomous Car
     4. m22=GPIO 25
     5. pwm1=GPIO 5 (Speed Control Left)
     6. pwm2=GPIO 6 (Speed Control Right)
-    7. GPIO_TRIGGER = GPIO 13
-    8. GPIO_ECHO = GPIO 19
+    7. GPIO_TRIGGER = GPIO 21
+    8. GPIO_ECHO = GPIO 26
     9. IR Left=GPIO 2
     10. IR Center=GPIO 3
     11. IR Right=GPIO 4
-    12. Wheel Encoder Left=GPIO 9
-    13. Wheel Encoder Right=GPIO 10
+    12. Wheel Encoder Left=GPIO 16
+    13. Wheel Encoder Right=GPIO 20
