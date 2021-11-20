@@ -33,8 +33,9 @@ def main():
         if action == "set":
             for i, j in message_dict.items():
                 set(i, j)
-            socket.send(json.dumps(
-                {"send_module": "mother_node", "action": "received"}).encode('utf-8'))
+            if sender!="Ultrasonic" or sender!="IR" or sender!="Wheel_Encoder_L" or sender!="Wheel_Encoder_R":
+                socket.send(json.dumps(
+                    {"send_module": "mother_node", "action": "received"}).encode('utf-8'))
             # Return Response Here
         elif action == "read":
             new_dict = state_dict

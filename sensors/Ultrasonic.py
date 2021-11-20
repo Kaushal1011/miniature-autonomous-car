@@ -2,8 +2,10 @@
 #Libraries
 import RPi.GPIO as GPIO
 import time
-import requests
- 
+# import requests
+import zmq
+import json
+
 #GPIO Mode (BOARD / BCM)
 GPIO.setmode(GPIO.BCM)
  
@@ -14,6 +16,15 @@ GPIO_ECHO = 19
 #set GPIO direction (IN / OUT)
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
 GPIO.setup(GPIO_ECHO, GPIO.IN)
+
+
+
+
+context = zmq.Context()
+
+socket = context.socket(zmq.REQ)
+socket.connect("tcp://localhost:5555")
+
  
 def distance():
     # set Trigger to HIGH
@@ -50,7 +61,14 @@ if __name__ == '__main__':
             dist = distance()
             
             print ("Measured Distance = %.1f cm" % dist)
-            # time.sleep(2)
+            new_dict={}
+            new_dict["send_module"] = "Ultrasonic"
+            new_dict["action"] = "set"
+            new_dict["b_dist"]=dist
+            
+            socket.send(json.dumps(new_dict).encode('utf-8'))
+            
+            time.sleep(0.1)
             # PARAMS = {'api_key':'2FW6VH3PCNKWQ1MU','field1':dist}
             # r = requests.get(url = URL, params = PARAMS)
             # data=r.json()
