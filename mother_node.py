@@ -1,11 +1,11 @@
 
-from states import state_dict,state_dict_store, nav_dict
+from states import state_dict, state_dict_store, nav_dict
 import time
 import zmq
 import json
 import logging
 
-logging.basicConfig(filename='example.log',level=logging.DEBUG)
+logging.basicConfig(filename='example.log', level=logging.DEBUG)
 
 states = state_dict.keys()
 context = zmq.Context()
@@ -32,9 +32,8 @@ def main():
         if action == "set":
             for i, j in message_dict.items():
                 set(i, j)
-            if sender!="Ultrasonic" or sender!="IR" or sender!="Wheel_Encoder_L" or sender!="Wheel_Encoder_R":
-                socket.send(json.dumps(
-                    {"send_module": "mother_node", "action": "received"}).encode('utf-8'))
+            socket.send(json.dumps(
+                {"send_module": "mother_node", "action": "received"}).encode('utf-8'))
             # Return Response Here
         elif action == "read":
             new_dict = state_dict
