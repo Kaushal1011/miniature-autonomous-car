@@ -30,6 +30,7 @@ def main():
         logging.info("Message Received from " + sender)
         action = message_dict.pop("action")
         if action == "set":
+            logging.info(str(message_dict))
             for i, j in message_dict.items():
                 set(i, j)
             socket.send(json.dumps(
@@ -54,3 +55,4 @@ if __name__ == "__main__":
     set("l_dist", 100)
     # print(state_dict)
     logging.info(state_dict)
+    main()

@@ -1,5 +1,6 @@
 # define function here
 import RPi.GPIO as GPIO
+import time
 pwm1_c = 0
 pwm2_c = 0
 
@@ -25,6 +26,7 @@ def init():
     GPIO.output(m12, 0)
     GPIO.output(m21, 0)
     GPIO.output(m22, 0)
+    global pwm1_c,pwm2_c
 
     pwm1_c = GPIO.PWM(pwm1, 100)
     pwm2_c = GPIO.PWM(pwm2, 100)
@@ -41,10 +43,10 @@ def forward():
 
 
 def back():
-    GPIO.output(m11, 1)
-    GPIO.output(m12, 0)
-    GPIO.output(m21, 1)
-    GPIO.output(m22, 0)
+    GPIO.output(m11, 0)
+    GPIO.output(m12, 1)
+    GPIO.output(m21, 0)
+    GPIO.output(m22, 1)
     return 'true'
 
 
@@ -60,7 +62,14 @@ def stop():
 
 # params should be in [0,1]
 def speedcontrol(valuel=0, valuer=0):
-
+    global pwm1_c,pwm2_c
     pwm1_c.ChangeDutyCycle(valuel*100)
     pwm2_c.ChangeDutyCycle(valuer*100)
     return True
+
+init()
+forward()
+
+speedcontrol(0.5,0.5)
+time.sleep(3)
+speedcontrol(0,0)

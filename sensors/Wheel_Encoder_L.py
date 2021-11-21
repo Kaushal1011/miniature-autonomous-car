@@ -20,6 +20,7 @@ rpm = 0
 elapse = 0
 sensor = 16
 radius = 6
+km_per_sec =0
 
 pulse = 0
 start_timer = time.time()
@@ -50,7 +51,7 @@ def calculate_speed(r_cm):
         km_per_sec = dist_km / elapse       # calculate KM/sec
         km_per_hour = km_per_sec * 3600     # calculate KM/h
         # measure distance traverse in meter
-        dist_meas = (dist_km*pulse)*1000
+        dist_meas = (circ_cm*pulse)/24
         return km_per_hour
 
 
