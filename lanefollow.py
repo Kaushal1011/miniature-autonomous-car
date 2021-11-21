@@ -11,7 +11,7 @@ from mobility import LaneFollow
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
 camera.resolution = (800, 600)
-camera.framerate = 20
+camera.framerate = 30
 rawCapture = PiRGBArray(camera, size=(800, 600))
 
 # allow the camera to warmup
@@ -20,8 +20,8 @@ time.sleep(0.1)
 
 K =0.03333   # Change this based on what happens irl
 
-default_speed = 0.45
-tdiff=0.15
+default_speed = 0.6
+tdiff=0.12
 
 
 MotorDriver.init()
@@ -37,29 +37,21 @@ try:
         #imagenew = cv2.rotate(image, cv2.ROTATE_180)
         
         #MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
-        angle = LaneFollow.find_steering_angle(image)
+        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [0, 450], [800, 450], [800, 600]])
         pidval = pid.update(angle-90)
         pwmdiff = pidval*K
         pwmdiff = abs(pwmdiff)
-        if pwmdiff > 0.3:
-            pwmdiff = 0.3
+        if pwmdiff > 0.35:
+            pwmdiff = 0.35
         # Do lane follow
         print(angle)
         angle=SmoothSignal.smooth_angle(LaneFollow.angle_arr,angle)
         print(pwmdiff)
         
-        if abs(angle-90>5):
-            if angle-90 < 10:
-                MotorDriver.speedcontrol(0, pwmdiff/2.5)
-            if angle-90 > 10:
-                MotorDriver.speedcontrol(pwmdiff/2.5, 0)
-            if angle-90 < 10:
-                MotorDriver.speedcontrol(0, pwmdiff/2)
-            if angle-90 > 10:
-                MotorDriver.speedcontrol(pwmdiff/2, 0)
-            if angle-90 < 20:
+        if abs(angle-90>6):
+            if angle-90 < 6:
                 MotorDriver.speedcontrol(0, pwmdiff)
-            if angle-90 > 20:
+            if angle-90 > 6:
                 MotorDriver.speedcontrol(pwmdiff-tdiff, 0)
 
         else :
