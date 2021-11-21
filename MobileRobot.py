@@ -39,7 +39,7 @@ pid = None
 
 K = 5  # Change this based on what happens irl
 
-default_speed = 50
+default_speed = 0.3
 
 
 def start_rob(path):
@@ -121,6 +121,10 @@ def function_loop():
             # write some logic to select either one here
             pidval = pid.update(angle-90)
             pwmdiff = pidval*K
+            pwmdiff = pidval*K
+            pwmdiff = abs(pwmdiff)
+            if pwmdiff > 0.5:
+                pwmdiff = 0.5
             # Do lane follow
             if pwmdiff < 0:
                 MotorDriver.speedcontrol(default_speed, default_speed+pwmdiff)
