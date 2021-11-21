@@ -67,13 +67,16 @@ def speedcontrol(valuel=0, valuer=0):
     pwm2_c.ChangeDutyCycle(valuer*100)
     return True
 
-init()
-forward()
-
-speedcontrol(0.5,0.5)
-time.sleep(0.4)
-speedcontrol(0.8,0.1)
-time.sleep(1)
-speedcontrol(0.5,0.5)
-time.sleep(0.5)
-speedcontrol(0,0)
+if __name__=="__main__":
+ init()
+ stop()
+ forward()
+ speedcontrol(0.4,0.5)
+ time.sleep(3)
+ stop()
+#time.sleep(0.4)
+#speedcontrol(0.8,0.1)
+#time.sleep(1)
+#speedcontrol(0.5,0.5)
+#time.sleep(0.5)
+#speedcontrol(0,0)

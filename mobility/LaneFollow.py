@@ -16,7 +16,7 @@ thresholded_image = []
 angle_arr = []
 
 
-def find_steering_angle(img, roi=[[0, 500], [0, 200], [800, 200], [800, 500]]):
+def find_steering_angle(img, roi=[[0, 600], [0, 300], [800, 300], [800, 600]]):
     anew = cv2.rotate(img, cv2.ROTATE_180)
     # anew=cv2.rotate(a, cv2.ROTATE_90_CLOCKWISE)
     s, masked_img = roi_func(
