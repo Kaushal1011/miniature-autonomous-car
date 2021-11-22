@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 import time
 import math
+
 import zmq
 import json
 
@@ -12,12 +13,14 @@ context = zmq.Context()
 socket = context.socket(zmq.REQ)
 socket.connect("tcp://localhost:5555")
 
+
 dist_meas = 0.00
 km_per_hour = 0
 rpm = 0
 elapse = 0
 sensor = 20
 radius = 6
+km_per_sec =0
 
 pulse = 0
 start_timer = time.time()
@@ -48,7 +51,7 @@ def calculate_speed(r_cm):
         km_per_sec = dist_km / elapse       # calculate KM/sec
         km_per_hour = km_per_sec * 3600     # calculate KM/h
         # measure distance traverse in meter
-        dist_meas = (dist_km*pulse)*1000
+        dist_meas = (circ_cm*pulse)/24
         return km_per_hour
 
 
@@ -61,15 +64,14 @@ if __name__ == '__main__':
     init_GPIO()
     init_interrupt()
     while True:
-        # calculate for both wheels
         # call this function with wheel radius as parameter
         calculate_speed(radius)
         # send speed and distance from both wheels to mother_node
         new_dict = {}
         new_dict["send_module"] = "Wheel_Encoder_R"
         new_dict["action"] = "set"
-        new_dict["r_dist"] = dist_meas
-        new_dict["r_speed"] = km_per_sec*1000
+        new_dict["l_dist"] = dist_meas
+        new_dict["l_speed"] = km_per_sec*1000
         socket.send(json.dumps(new_dict).encode('utf-8'))
         socket.recv()
         #print('rpm:{0:.0f}-RPM kmh:{1:.0f}-KMH dist_meas:{2:.2f}m pulse:{3}'.format(rpm,km_per_hour,dist_meas,pulse))
