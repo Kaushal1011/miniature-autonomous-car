@@ -72,7 +72,7 @@ if __name__=="__main__":
  stop()
  forward()
  speedcontrol(0.4,0.5)
- time.sleep(3)
+ #time.sleep(3)
  stop()
 #time.sleep(0.4)
 #speedcontrol(0.8,0.1)

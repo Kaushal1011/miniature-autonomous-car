@@ -18,14 +18,14 @@ rawCapture = PiRGBArray(camera, size=(800, 600))
 time.sleep(0.1)
 
 
-K =0.03333   # Change this based on what happens irl
-
+K =0.00333   # Change this based on what happens irl
+pwmdiffval=0.8
 default_speed = 0.6
-tdiff=0.12
+tdiff=0.15
 
 
 MotorDriver.init()
-pid = PID_Mod.PID(P=1, I=0.03, D=0.5)
+pid = PID_Mod.PID(P=4, I=0.8, D=4,Integrator_max=0.8, Integrator_min=-0.8)
 MotorDriver.forward()
 
 count = 0
@@ -37,30 +37,41 @@ try:
         #imagenew = cv2.rotate(image, cv2.ROTATE_180)
         
         #MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
-        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [0, 450], [800, 450], [800, 600]])
+        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [0, 350], [800, 350], [800, 600]])
         pidval = pid.update(angle-90)
         pwmdiff = pidval*K
         pwmdiff = abs(pwmdiff)
-        if pwmdiff > 0.35:
-            pwmdiff = 0.35
+        if pwmdiff > pwmdiffval:
+            pwmdiff = pwmdiffval
         # Do lane follow
         print(angle)
-        angle=SmoothSignal.smooth_angle(LaneFollow.angle_arr,angle)
+        angle=SmoothSignal.smooth_angle(LaneFollow.angle_arr,angle,WINDOW_SIZE=2)
+        print(angle)
         print(pwmdiff)
         
         if abs(angle-90>6):
             if angle-90 < 6:
-                MotorDriver.speedcontrol(0, pwmdiff)
+                MotorDriver.speedcontrol(0 , pwmdiff )
+                
             if angle-90 > 6:
-                MotorDriver.speedcontrol(pwmdiff-tdiff, 0)
+                MotorDriver.speedcontrol(pwmdiff  , 0)
+                
+            time.sleep(0.2)
+            MotorDriver.speedcontrol(0, 0)
 
         else :
             MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
+            time.sleep(0.2)
+            MotorDriver.speedcontrol((default_speed-tdiff)/2, (default_speed)/2)
+            time.sleep(0.2)
+            MotorDriver.speedcontrol(0, 0)
         rawCapture.truncate(0)
-except KeyboardInterrupt:
+        
+except KeyboardInterrupt or Exception as e:
     print(count)
     print("video out")
     MotorDriver.stop()
     LaneFollow.save_videos()
+
 
     #time.sleep(0.02)
