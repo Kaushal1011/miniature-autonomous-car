@@ -19,17 +19,17 @@ time.sleep(0.1)
 
 
 K =0.00333   # Change this based on what happens irl
-pwmdiffval=0.7
+pwmdiffval=0.5
 default_speed = 0.5
-tdiff=0.1
+tdiff=0.15
 
 angle_arr_l=[]
 angle_arr_r=[]
 
 
 MotorDriver.init()
-pid_r = PID_Mod.PID(P=1.2, I=2, D=3,Integrator_max=0.8, Integrator_min=-0.8)
-pid_l = PID_Mod.PID(P=1.1, I=2, D=3,Integrator_max=0.8, Integrator_min=-0.8)
+pid_r = PID_Mod.PID(P=3, I=2, D=2,Integrator_max=0.8, Integrator_min=-0.8)
+pid_l = PID_Mod.PID(P=2, I=2, D=2,Integrator_max=0.8, Integrator_min=-0.8)
 MotorDriver.forward()
 angleold=90
 count = 0
@@ -40,7 +40,7 @@ try:
         image  = frame.array
         #imagenew = cv2.rotate(image, cv2.ROTATE_180)
         #MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
-        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [150, 450], [750, 400], [800, 600]])
+        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [50, 400], [750, 400], [800, 600]])
         print(angle)
         if angle==-90:
             angle=90
@@ -81,7 +81,7 @@ try:
                 pass
         else :
             MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
-            time.sleep(0.2)
+            time.sleep(0.3)
             MotorDriver.speedcontrol(0, 0)
         print("inhere")
         MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
