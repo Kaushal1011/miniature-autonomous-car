@@ -18,15 +18,18 @@ angle_arr = []
 
 def find_steering_angle(img, roi=[[0, 600], [0, 300], [800, 300], [800, 600]]):
     anew = cv2.rotate(img, cv2.ROTATE_180)
+    anew2= cv2.cvtColor(anew, cv2.COLOR_BGR2GRAY)
     # anew=cv2.rotate(a, cv2.ROTATE_90_CLOCKWISE)
     s, masked_img = roi_func(
-        anew[:, :, 0], roi)
+        anew2, roi)
     lines = find_lanes(masked_img)
     thresholded_image.append(draw_line(anew, lines))
 
-    sloped_lines = average_slope_intercept(anew[:, :, 0], lines)
+    sloped_lines = average_slope_intercept(anew2, lines)
     imgnew = display_lines(anew, sloped_lines)
-    angle = compute_steering_angle(anew[:, :, 0], sloped_lines)
+    angle = compute_steering_angle(anew2, sloped_lines)
+    global angle_arr
+    angle_arr.append(angle)
 
     imgnew2 = display_heading_line(imgnew, angle)
     control_image.append(imgnew2)

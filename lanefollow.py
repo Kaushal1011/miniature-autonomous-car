@@ -19,15 +19,19 @@ time.sleep(0.1)
 
 
 K =0.00333   # Change this based on what happens irl
-pwmdiffval=0.8
-default_speed = 0.6
-tdiff=0.15
+pwmdiffval=0.7
+default_speed = 0.5
+tdiff=0.1
+
+angle_arr_l=[]
+angle_arr_r=[]
 
 
 MotorDriver.init()
-pid = PID_Mod.PID(P=4, I=0.8, D=4,Integrator_max=0.8, Integrator_min=-0.8)
+pid_r = PID_Mod.PID(P=1.2, I=2, D=3,Integrator_max=0.8, Integrator_min=-0.8)
+pid_l = PID_Mod.PID(P=1.1, I=2, D=3,Integrator_max=0.8, Integrator_min=-0.8)
 MotorDriver.forward()
-
+angleold=90
 count = 0
 try:
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
@@ -35,36 +39,56 @@ try:
         # grab an image from the camera
         image  = frame.array
         #imagenew = cv2.rotate(image, cv2.ROTATE_180)
-        
         #MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
-        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [0, 350], [800, 350], [800, 600]])
-        pidval = pid.update(angle-90)
-        pwmdiff = pidval*K
-        pwmdiff = abs(pwmdiff)
-        if pwmdiff > pwmdiffval:
-            pwmdiff = pwmdiffval
-        # Do lane follow
+        angle = LaneFollow.find_steering_angle(image,roi=[[0, 600], [150, 450], [750, 400], [800, 600]])
         print(angle)
-        angle=SmoothSignal.smooth_angle(LaneFollow.angle_arr,angle,WINDOW_SIZE=2)
-        print(angle)
-        print(pwmdiff)
-        
-        if abs(angle-90>6):
-            if angle-90 < 6:
-                MotorDriver.speedcontrol(0 , pwmdiff )
+        if angle==-90:
+            angle=90
+        else:
+            angleold=angle
+        print(abs(angle-90))
+        print(abs(angle-90) > 6)
+        if abs(angle-90)>10:   
+            if angle-90 < 10:
+                pid_l.integrator=0
+                pidval = pid_r.update(angle-90)
+                pwmdiff = pidval*K
+                pwmdiff = abs(pwmdiff)
+                if pwmdiff > pwmdiffval:
+                    pwmdiff = pwmdiffval
+                # Do lane follow
+                #angle=SmoothSignal.smooth_angle(LaneFollow.angle_arr,angle,WINDOW_SIZE=2)
+                print(angle)
+                print(pwmdiff)
+                MotorDriver.speedcontrol(0 , pwmdiff+tdiff )
+                time.sleep(0.1)
+                MotorDriver.speedcontrol(0, 0)
                 
-            if angle-90 > 6:
+            elif angle-90 > 10:
+                pid_r.integrator=0
+                pidval = pid_l.update(angle-90)
+                pwmdiff = pidval*K
+                pwmdiff = abs(pwmdiff)
+                if pwmdiff > pwmdiffval:
+                    pwmdiff = pwmdiffval
+                # Do lane follow
+                print(angle)
+                print(pwmdiff)
                 MotorDriver.speedcontrol(pwmdiff  , 0)
-                
-            time.sleep(0.2)
-            MotorDriver.speedcontrol(0, 0)
-
+                time.sleep(0.1)
+                MotorDriver.speedcontrol(0, 0)
+            else:
+                pass
         else :
             MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
             time.sleep(0.2)
-            MotorDriver.speedcontrol((default_speed-tdiff)/2, (default_speed)/2)
-            time.sleep(0.2)
             MotorDriver.speedcontrol(0, 0)
+        print("inhere")
+        MotorDriver.speedcontrol(default_speed-tdiff, default_speed)
+        time.sleep(0.2)
+        MotorDriver.speedcontrol((default_speed-tdiff)/2, (default_speed)/2)
+        time.sleep(0.2)
+        MotorDriver.speedcontrol(0, 0)
         rawCapture.truncate(0)
         
 except KeyboardInterrupt or Exception as e:

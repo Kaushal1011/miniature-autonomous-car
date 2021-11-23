@@ -17,7 +17,7 @@ def roi_func(gimg, stencil_coords=[[0, 500], [0, 200], [800, 200], [800, 500]]):
 
 
 def find_lanes(roi_img):
-    ret, thresh = cv2.threshold(roi_img, 130, 145, cv2.THRESH_BINARY)
+    ret, thresh = cv2.threshold(roi_img, 200, 255, cv2.THRESH_BINARY)
     lines = cv2.HoughLinesP(thresh, 1, np.pi/180, 30, maxLineGap=200)
     return lines
 
@@ -65,7 +65,7 @@ def average_slope_intercept(frame, line_segments):
                 continue
             fit = np.polyfit((x1, x2), (y1, y2), 1)
             slope = fit[0]
-            intercept = fit[1]
+            intercept=fit[1]
             if slope < 0:
                 if x1 < left_region_boundary and x2 < left_region_boundary:
                     left_fit.append((slope, intercept))
